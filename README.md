@@ -1,6 +1,6 @@
 # Appe — Mobile App for Frappe & ERPNext
 <p align="center">
-  <img src="https://eactivetechnologies.com/files/Appe.png" alt="Appe Banner" width="200" />
+  <img src="https://appetech.io/files/logo.png" alt="Appe Banner" width="200" />
 </p>
 
 > **Frappe, anywhere you go.**  
@@ -42,12 +42,12 @@ Install **Appe** using the [bench](https://github.com/frappe/bench) CLI
 
 ```bash
 cd $PATH_TO_YOUR_BENCH
-bench get-app https://github.com/eactive-tech/appe.git --branch version-15
+bench get-app https://github.com/appetech/Appe.git --branch master
 bench install-app appe
 
 ```
 
 
 ## Help & Support
-If you have any issues, questions, or feedback, please don't hesitate to reach out to us via email at: support@eactive.in.
-For more information, please visit: https://eactivetechnologies.com.
+If you have any issues, questions, or feedback, please don't hesitate to reach out to us via email at: info@appetech.in.
+For more information, please visit: https://appetech.io
