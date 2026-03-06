@@ -8,6 +8,7 @@
  "field_order": [
   "naming_series",
   "employee_name",
+  "image",
   "user_id",
   "status",
   "section_break_2mp1",
@@ -64,6 +65,7 @@
   {
    "fieldname": "employee_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Employee Name",
    "reqd": 1
   },
@@ -76,6 +78,7 @@
   {
    "fieldname": "user_id",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "User Id",
    "options": "User",
    "reqd": 1
@@ -108,13 +111,19 @@
    "fieldtype": "Select",
    "label": "Status",
    "options": "Active\nDisabled"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "Image"
   }
  ],
  "grid_page_length": 50,
+ "image_field": "image",
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-08-15 14:27:58.037175",
+ "modified": "2026-02-26 23:26:18.702255",
  "modified_by": "Administrator",
  "module": "Appe",
  "name": "Appe Employee",

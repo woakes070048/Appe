@@ -11,6 +11,8 @@
   "refrence_doctype",
   "refrence_docname",
   "report_name",
+  "screen_name",
+  "web_url",
   "description",
   "image",
   "json"
@@ -26,7 +28,7 @@
    "reqd": 1
   },
   {
-   "depends_on": "eval:['Doctype','Form','Single Doctype'].includes(doc.type)",
+   "depends_on": "eval:['Doctype','Form','Single Doctype','Screen','Report'].includes(doc.type)",
    "fieldname": "refrence_doctype",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -55,7 +57,7 @@
    "in_preview": 1,
    "in_standard_filter": 1,
    "label": "Type",
-   "options": "\nDoctype\nSingle Doctype\nReport\nForm\nDashboard\nScreen\nWebPage\nChart\nNumber Card",
+   "options": "\nDoctype\nSingle Doctype\nReport\nForm\nDashboard\nWorkspace\nScreen\nWebPage",
    "reqd": 1
   },
   {
@@ -75,12 +77,26 @@
    "fieldtype": "Dynamic Link",
    "label": "Refrence Docname",
    "options": "refrence_doctype"
+  },
+  {
+   "depends_on": "eval:doc.type=='Screen' || doc.refrence_doctype=='Appe Screen'",
+   "fieldname": "screen_name",
+   "fieldtype": "Data",
+   "label": "Screen Name"
+  },
+  {
+   "depends_on": "eval:doc.type==\"WebPage\"",
+   "fieldname": "web_url",
+   "fieldtype": "Small Text",
+   "label": "Web URL",
+   "mandatory_depends_on": "eval:doc.type==\"WebPage\"",
+   "max_height": "35px"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-02-26 09:17:48.526749",
+ "modified": "2026-03-05 09:09:43.743804",
  "modified_by": "Administrator",
  "module": "Appe",
  "name": "Mobile App Module Items",

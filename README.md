@@ -37,7 +37,9 @@ Whether you are running a business on ERPNext or managing custom Frappe modules,
 
 ## Installation
 
-Install **Appe** using the [bench](https://github.com/frappe/bench) CLI
+1. Register at: [www.appetech.io/signup](https://appetech.io/signup)
+
+2. Install **Appe** using the [bench](https://github.com/frappe/bench) CLI
 <p>Run following commands:</p>
 
 ```bash
@@ -49,5 +51,12 @@ bench install-app appe
 
 
 ## Help & Support
-If you have any issues, questions, or feedback, please don't hesitate to reach out to us via email at: info@appetech.in.
-For more information, please visit: https://appetech.io
+If you have any questions, issues, or feature requests, we’re here to help.
+
+📧 Email Support: info@appetech.in, appetechnologies@gmail.com
+
+🌐 Website: https://appetech.io
+
+🎫 Support Portal: https://appetech.io/support
+
+You can also create an issue on this GitHub repository for bug reports or feature suggestions.

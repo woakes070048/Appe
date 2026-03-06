@@ -71,7 +71,9 @@ def update_appe_reports(doc,event):
 def receive_message():
     try:
         message = frappe.form_dict
-        frappe.publish_realtime(event='new_chat_message', user= message.get('receiverId'), message={'user': message.get('receiverId'), 'message': message})
+        # frappe.publish_realtime(event='new_chat_message', user= message.get('receiverId'), message={'user': message.get('receiverId'), 'message': message})
+        frappe.publish_realtime(event='chat_message', user= "kamesh3928@gmail.com", message={'user': 'kamesh3928@gmail.com', 'message': 'kamesh3928@gmail.com kamesh3928@gmail.com kamesh3928@gmail.com kamesh3928@gmail.com kamesh3928@gmail.com kamesh3928@gmail.com kamesh3928@gmail.com kamesh3928@gmail.com kamesh3928@gmail.com kamesh3928@gmail.com kamesh3928@gmail.com kamesh3928@gmail.com'})
+
         frappe.response.message={
             'status':True,
             'messgae':'inserted'
