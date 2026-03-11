@@ -32,7 +32,7 @@ Whether you are running a business on ERPNext or managing custom Frappe modules,
 
 ## Install Mobile App
 - **Android** – [Appe Mobile App](https://play.google.com/store/apps/details?id=com.kameshkumar.appe&pcampaignid=web_share)  
-- **IOS** – Comming Soon.  
+- **IOS** – [Appe ERPNext Mobile App](https://apps.apple.com/us/app/appe/id6759156081)  
 
 
 ## Installation

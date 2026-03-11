@@ -46,10 +46,17 @@ frappe.ui.form.on('Mobile App Dashboard Items', {
             frappe.model.set_value(cdt, cdn, "linked_doctype", "Appe Screen");
             frm.fields_dict.items.grid.grid_rows_by_docname[cdn].toggle_editable("linked_doctype", false);
         }
+        else if (row.type === "Number Card") {
+            frappe.model.set_value(cdt, cdn, "linked_doctype", "Number Card");
+            frm.fields_dict.items.grid.grid_rows_by_docname[cdn].toggle_editable("linked_doctype", false);
+        }
+        else if (row.type === "Chart") {
+            frappe.model.set_value(cdt, cdn, "linked_doctype", "Dashboard Chart");
+            frm.fields_dict.items.grid.grid_rows_by_docname[cdn].toggle_editable("linked_doctype", false);
+        }
 
         else {
             frappe.model.set_value(cdt, cdn, "linked_doctype", "");
-            frm.fields_dict.items.grid.grid_rows_by_docname[cdn].toggle_editable("linked_doctype", true);
         }
 
         frm.refresh_field("items");

@@ -15,6 +15,7 @@
   "enable_leave_balance",
   "setup_tab",
   "onesignal_app_id",
+  "ios_onesignal_app_id",
   "onesignal_api_key",
   "map_setup_tab",
   "google_map_api"
@@ -74,11 +75,11 @@
    "max_height": "35px"
   },
   {
-   "description": "This is a One signal App ID",
+   "description": "This is a One signal App ID Only for Android",
    "fieldname": "onesignal_app_id",
    "fieldtype": "Small Text",
    "label": "OneSignal App Id",
-   "max_height": "100px"
+   "max_height": "50px"
   },
   {
    "fieldname": "map_setup_tab",
@@ -90,13 +91,20 @@
    "fieldtype": "Small Text",
    "label": "Google Map API",
    "max_height": "50px"
+  },
+  {
+   "description": "This is a One signal App ID Only for IOS",
+   "fieldname": "ios_onesignal_app_id",
+   "fieldtype": "Small Text",
+   "label": "IOS OneSignal App Id",
+   "max_height": "50px"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-03-08 08:11:06.613393",
+ "modified": "2026-03-09 22:12:44.859683",
  "modified_by": "Administrator",
  "module": "Appe",
  "name": "Appe Settings",

@@ -6,7 +6,9 @@
  "engine": "InnoDB",
  "field_order": [
   "sender",
+  "sender_email",
   "receiver",
+  "receiver_email",
   "group",
   "group_receivers",
   "message",
@@ -78,12 +80,28 @@
    "fieldtype": "Link",
    "label": "Reply From",
    "options": "Appe Chat"
+  },
+  {
+   "fetch_from": "sender.email",
+   "fieldname": "sender_email",
+   "fieldtype": "Data",
+   "label": "Sender Email",
+   "options": "Email",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "receiver.email",
+   "fieldname": "receiver_email",
+   "fieldtype": "Data",
+   "label": "Receiver Email",
+   "options": "Email",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-20 13:50:57.408823",
+ "modified": "2026-03-10 22:07:49.172342",
  "modified_by": "Administrator",
  "module": "Appe",
  "name": "Appe Chat",
