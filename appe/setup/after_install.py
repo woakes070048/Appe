@@ -2,7 +2,8 @@ import frappe
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 def after_install():
-    create_employee_fields()
+    if frappe.db.exists("DocType", "Employee"):
+        create_employee_fields()
 
 def create_employee_fields():
     custom_fields = {

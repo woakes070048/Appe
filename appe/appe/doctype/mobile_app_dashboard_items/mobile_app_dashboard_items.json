@@ -45,7 +45,7 @@
    "reqd": 1
   },
   {
-   "default": "0",
+   "default": "1",
    "fieldname": "active",
    "fieldtype": "Check",
    "in_list_view": 1,

@@ -516,7 +516,8 @@ def leave_balance():
 
         # ✅ Conditional import
         if erpnext_exists:
-            from erpnext.hr.doctype.leave_application.leave_application import get_leave_balance_on
+            # from erpnext.hr.doctype.leave_application.leave_application import get_leave_balance_on
+            from hrms.hr.doctype.leave_application.leave_application import get_leave_balance_on
         else:
             get_leave_balance_on = None
 
@@ -563,6 +564,7 @@ def leave_balance():
                     leave_type,
                     today()
                 ) if get_leave_balance_on else (total - used)
+                frappe.log_error("leave_balance", remaining)
 
                 data.append({
                     "type": leave_type,
