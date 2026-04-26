@@ -17,7 +17,10 @@
   "received_time",
   "seen_time",
   "delete_time",
-  "reply_from"
+  "reply_from",
+  "latitude",
+  "longitude",
+  "location"
  ],
  "fields": [
   {
@@ -53,7 +56,7 @@
    "fieldname": "message_type",
    "fieldtype": "Select",
    "label": "Message Type",
-   "options": "\nImage\nVideo\nDoc\nAttach"
+   "options": "\nImage\nVideo\nDoc\nPdf\nLocation\nAttach"
   },
   {
    "fieldname": "send_time",
@@ -96,12 +99,27 @@
    "label": "Receiver Email",
    "options": "Email",
    "read_only": 1
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "label": "Latitude"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "label": "Longitude"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Geolocation",
+   "label": "Location"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-10 22:07:49.172342",
+ "modified": "2026-04-05 22:51:22.740616",
  "modified_by": "Administrator",
  "module": "Appe",
  "name": "Appe Chat",

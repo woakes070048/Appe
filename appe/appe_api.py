@@ -9,6 +9,14 @@ import requests
 from frappe.utils.password import check_password, get_password_reset_limit
 import gzip
 
+import re
+from typing import Optional
+from frappe.utils import get_datetime, now_datetime
+
+
+_ALLOWED_TYPES = {"Text", "Image", "Video", "Doc", "Pdf", "Location", "Attach"}
+
+
 
 
 @frappe.whitelist()
@@ -74,22 +82,147 @@ def update_appe_reports(doc,event):
     except Exception as e:
         frappe.log_error("update_appe_reports error", str(e))
     
+# @frappe.whitelist()
+# def receive_message():
+#     try:
+#         message = frappe.form_dict
+#         frappe.publish_realtime(event='new_chat_message', user= message.get('receiverId'), message={'user': message.get('receiverId'), 'message': message})
+
+#         frappe.response.message={
+#             'status':True,
+#             'messgae':'inserted'
+#         }
+
+#     except Exception as e:
+#         frappe.response.message={
+#             'status':False,
+#             'messgae':f"{e}"
+#         }
+
+
+def _to_bool(v) -> bool:
+    if isinstance(v, bool):
+        return v
+    if v is None:
+        return False
+    s = str(v).strip().lower()
+    return s in {"1", "true", "yes", "y"}
+
+
+def _normalize_message_type(message_type: Optional[str]) -> str:
+    mt = (message_type or "Text").strip()
+    return mt if mt in _ALLOWED_TYPES else "Attach"
+
+
+def _extract_lat_lng_if_needed(message_type: str, message: str, latitude, longitude):
+    """If Location message has maps url but no lat/lng, parse from query=lat,lng"""
+    if message_type != "Location":
+        return latitude, longitude
+    if latitude and longitude:
+        return latitude, longitude
+
+    m = re.search(r"query=([-+]?\d+(?:\.\d+)?),([-+]?\d+(?:\.\d+)?)", message or "")
+    if m:
+        return m.group(1), m.group(2)
+    return latitude, longitude
+
 @frappe.whitelist()
-def receive_message():
-    try:
-        message = frappe.form_dict
-        frappe.publish_realtime(event='new_chat_message', user= message.get('receiverId'), message={'user': message.get('receiverId'), 'message': message})
+def receive_message(
+    sender=None,
+    receiver=None,
+    message=None,
+    message_type=None,
+    type=None,
+    group="0",
+    group_receivers=None,
+    file_url=None,
+    attachment=None,
+    attach=None,
+    **kwargs
+):
+    sender = (sender or "").strip()
+    receiver = (receiver or "").strip()
+    raw_type = (message_type or type or "Text").strip()
 
-        frappe.response.message={
-            'status':True,
-            'messgae':'inserted'
-        }
+    # Your backend rule: Text should not be in message_type
+    normalized_message_type = "" if raw_type == "Text" else raw_type
 
-    except Exception as e:
-        frappe.response.message={
-            'status':False,
-            'messgae':f"{e}"
-        }
+    # group tolerant parse
+    group_str = str(group).strip().lower()
+    is_group = group_str in ("1", "true", "yes")
+
+    attachment_url = (file_url or attachment or attach or "").strip()
+    message = (message or "").strip()
+
+    if not sender:
+        frappe.throw("sender is required")
+    if not receiver and not is_group:
+        frappe.throw("receiver is required")
+
+    # allow either text message OR attachment
+    if not message and not attachment_url:
+        frappe.throw("Either message or attachment is required")
+
+    doc = frappe.get_doc({
+        "doctype": "Appe Chat",
+        "sender": sender,
+        "receiver": receiver,
+        "message": message,                 # may be empty for attachments
+        "message_type": normalized_message_type,
+        "type": raw_type,                   # if your DocType has `type`
+        "group": 1 if is_group else 0,
+        "group_receivers": group_receivers or "",
+        "file_url": attachment_url or None, # if your DocType has file_url
+        "attachment": attachment_url or None, # optional, if exists
+        "attach": attachment_url or None,     # optional, if exists
+    })
+    doc.insert(ignore_permissions=True)
+    frappe.db.commit()
+
+    payload = doc.as_dict()
+    frappe.publish_realtime("new_chat_message", payload)
+    frappe.publish_realtime("chat_message", payload)
+    return {"status": True, "message": payload}
+
+@frappe.whitelist()
+def get_chat_messages(
+    user1: str,
+    user2: str,
+    limit_start: int = 0,
+    limit_page_length: int = 100,
+):
+    """
+    GET /api/method/appe.appe.api.chat.get_chat_messages?user1=EMP-001&user2=EMP-002
+    """
+    if not user1 or not user2:
+        frappe.throw("user1 and user2 are required", frappe.ValidationError)
+
+    rows = frappe.get_all(
+        "Appe Chat",
+        filters={
+            "group": 0,
+            "sender": ["in", [user1, user2]],
+            "receiver": ["in", [user1, user2]],
+        },
+        fields=[
+            "name",
+            "sender",
+            "receiver",
+            "message",
+            "message_type",
+            "send_time",
+            "group",
+            "group_receivers",
+            "latitude",
+            "longitude",
+            "creation",
+        ],
+        order_by="send_time asc",
+        limit_start=int(limit_start or 0),
+        limit_page_length=int(limit_page_length or 100),
+    )
+
+    return {"status": True, "data": rows}
 
 
 @frappe.whitelist()
@@ -132,6 +265,21 @@ def login_user(usr, pwd):
                 "message": "User Password  Is Not Correct",
             }
             return
+
+         # ✅ Create login session
+        frappe.local.login_manager.user = user_email
+        frappe.local.login_manager.post_login()
+
+        session = frappe.session.sid
+
+        # ✅ Set cookies manually (useful for app authentication)
+        frappe.local.cookie_manager.set_cookie("sid", session)
+        frappe.local.cookie_manager.set_cookie("system_user", "yes")
+        full_name = frappe.db.get_value("User", user_email, "full_name") or ""
+        frappe.local.cookie_manager.set_cookie("full_name", full_name)
+
+
+
         api_key, api_secret = generate_keys(user_email)
         erpnext_exists = get_apps()
         employee_data = frappe.db.get_all("Employee" if erpnext_exists else "Appe Employee", filters={'user_id': user_email}, fields=['*'])
@@ -618,8 +766,6 @@ def leave_balance():
             'status': False,
             'message': str(e)
         }
-
-
 
 
 @frappe.whitelist()
