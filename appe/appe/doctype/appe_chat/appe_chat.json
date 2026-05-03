@@ -59,6 +59,7 @@
    "options": "\nImage\nVideo\nDoc\nPdf\nLocation\nAttach"
   },
   {
+   "default": "Now",
    "fieldname": "send_time",
    "fieldtype": "Datetime",
    "label": "Send Time"
@@ -119,7 +120,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-05 22:51:22.740616",
+ "modified": "2026-05-03 18:07:04.723614",
  "modified_by": "Administrator",
  "module": "Appe",
  "name": "Appe Chat",

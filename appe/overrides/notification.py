@@ -1,6 +1,8 @@
 import frappe
 from frappe import _
+from frappe.core.doctype.role.role import get_info_based_on_role
 from frappe.email.doctype.notification.notification import Notification, get_context, json
+
 
 class SendNotification(Notification):
 
@@ -8,32 +10,7 @@ class SendNotification(Notification):
     def appe_send_push_notification(self, doc, notification, receivers):
         # try:
         frappe.log_error("send_push_notification receivers",receivers)
-        #     url = frappe.db.get_single_value("CRM Mobile Push Notification Setting", "fcm_url")
-        #     server_key = frappe.db.get_single_value("CRM Mobile Push Notification Setting", "server_key")
-        #     headers = {
-        #         'Authorization': 'key=' + server_key,
-        #         'Content-Type': 'application/json'
-        #     }
-        #     for receiver in receivers:
-        #         if receiver:
-        #             payload = {
-        #                 "to": receiver,
-        #                 "notification": {
-        #                     "title": notification.push_notification_title,
-        #                     "body": notification.push_notification_message
-        #                 },
-        #                 "data": {
-        #                     "document_type": doc.doctype,
-        #                     "document_name": doc.name
-        #                 }
-        #             }
-        #             response = make_post_request(
-        #                 url, headers=headers, data=json.dumps(payload))
-        #             frappe.log_error("send_push_notification",response)
-        #     frappe.msgprint("Push Notification Sent")
-
-        # except Exception as e:
-        #     frappe.log_error(frappe.get_traceback(), "Error in send_push_notification")
+       
 
         try:
             # Create new document
@@ -51,16 +28,54 @@ class SendNotification(Notification):
             for user in receivers:
                 if user:
                     notification_doc.append("users", {
-                        "user": user   # Make sure child table me fieldname "user" ho
+                        "user": user
                     })
+
+            frappe.log_error("Notification Doc",str(notification_doc))
 
             notification_doc.insert(ignore_permissions=True)
             notification_doc.submit()
+            frappe.db.commit()
 
             frappe.msgprint("Mobile App Notification Created Successfully")
 
         except Exception as e:
             frappe.log_error("Error in create_mobile_app_notification",e)
+            frappe.throw(e)
+
+    def get_push_receiver_list(self, doc, context):
+        """User IDs for Mobile Push — core get_receiver_list is for SMS (mobile_no)."""
+        receiver_list = []
+        for recipient in self.recipients:
+            if recipient.condition:
+                if not frappe.safe_eval(recipient.condition, None, context):
+                    continue
+
+            if recipient.receiver_by_document_field == "owner":
+                owner = doc.get("owner")
+                if owner:
+                    receiver_list.append(owner)
+            elif recipient.receiver_by_document_field:
+                fields = recipient.receiver_by_document_field.split(",")
+                if len(fields) > 1:
+                    for row in doc.get(fields[1]) or []:
+                        uid = row.get(fields[0])
+                        if uid:
+                            receiver_list.append(uid)
+                else:
+                    uid = doc.get(fields[0])
+                    if uid:
+                        receiver_list.append(uid)
+
+            if recipient.receiver_by_role:
+                receiver_list.extend(
+                    get_info_based_on_role(
+                        recipient.receiver_by_role, "name", ignore_permissions=True
+                    )
+                )
+
+        return list(dict.fromkeys(receiver_list))
+
     # def validate(self):
     #     self.validate_CRM_whatsapp_settings()
 
@@ -85,7 +100,7 @@ class SendNotification(Notification):
             #     send_whatsapp_msg(doc, self, receivers)
 
             if self.channel == 'Mobile Push Notification':
-                receivers = self.get_receiver_list(doc, context)
+                receivers = self.get_push_receiver_list(doc, context)
                 frappe.log_error('Notification Doc',str(context))
                 frappe.log_error("Push notification receiver", receivers)
                 # self.appe_send_push_notification(doc, , receivers)
