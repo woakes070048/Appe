@@ -664,7 +664,7 @@ def leave_balance():
         erpnext_exists = "erpnext" in installed_apps
         hrms_exists = "hrms" in installed_apps
 
-       get_leave_balance_on = None
+        get_leave_balance_on = None
         if hrms_exists:
             from hrms.hr.doctype.leave_application.leave_application import get_leave_balance_on
         elif erpnext_exists:
