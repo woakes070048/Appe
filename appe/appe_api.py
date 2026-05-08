@@ -660,14 +660,18 @@ def remove_assignment():
 @frappe.whitelist()
 def leave_balance():
     try:
-        erpnext_exists = "erpnext" in frappe.get_installed_apps()
+        installed_apps = frappe.get_installed_apps()
+        erpnext_exists = "erpnext" in installed_apps
+        hrms_exists = "hrms" in installed_apps
 
-        # ✅ Conditional import
-        if erpnext_exists:
-            # from erpnext.hr.doctype.leave_application.leave_application import get_leave_balance_on
+       get_leave_balance_on = None
+        if hrms_exists:
             from hrms.hr.doctype.leave_application.leave_application import get_leave_balance_on
-        else:
-            get_leave_balance_on = None
+        elif erpnext_exists:
+            try:
+                from erpnext.hr.doctype.leave_application.leave_application import get_leave_balance_on
+            except ImportError:
+                pass
 
         employee = frappe.get_doc(
             "Employee" if erpnext_exists else "Appe Employee",

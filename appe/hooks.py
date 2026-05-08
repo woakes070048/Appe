@@ -2,7 +2,7 @@ app_name = "appe"
 app_title = "appe"
 app_publisher = "Kamesh"
 app_description = "appe"
-app_email = "kamesh@eactive.in"
+app_email = "kamesh@appetech.in"
 app_license = "mit"
 
 # Apps
